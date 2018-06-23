@@ -4,23 +4,23 @@ namespace Ocelot.JWTAuthorize
     /// <summary>
     /// 用户或角色或其他凭据实体
     /// </summary>
-    public class Permission
+    public interface IPermission
     {
         /// <summary>
         /// 用户或角色或其他凭据名称
         /// </summary>
-        public virtual string Name
+         string Name
         { get; set; }
         /// <summary>
         /// 请求Url
         /// </summary>
-        public virtual string Url
+         string Url
         { get; set; }
 
         /// <summary>
         /// 请求谓词
         /// </summary>
-        public virtual string Predicate
+        string Predicate
         { get; set; }
     }
 }

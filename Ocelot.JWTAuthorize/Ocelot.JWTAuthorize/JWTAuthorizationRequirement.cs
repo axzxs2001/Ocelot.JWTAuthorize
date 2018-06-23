@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,18 @@ namespace Ocelot.JWTAuthorize
     /// </summary>
     public class JWTAuthorizationRequirement : IAuthorizationRequirement
     {
+        IEnumerable<IPermission> _permissions;
+        public JWTAuthorizationRequirement(IEnumerable<IPermission> permissions)
+        {
+            _permissions = permissions;
+        }
+
+        public bool Validate(HttpContext  httpContext)
+        {
+
+            return true;
+        }
+
         /// <summary>
         /// 无权限action
         /// </summary>
