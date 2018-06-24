@@ -19,6 +19,7 @@ namespace OcelotSample
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            .UseUrls("http://*:5000")
+            .UseStartup<Startup>();
     }
 }
