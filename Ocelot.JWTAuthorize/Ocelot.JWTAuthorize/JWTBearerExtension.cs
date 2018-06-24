@@ -73,7 +73,7 @@ namespace Ocelot.JWTAuthorize
         /// <param name="deniedUrl">拒绝路由</param>
         /// <param name="isHttps">是否https</param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddOcelotPolicyJwtBearer(this IServiceCollection services, Action<HttpContext> action)
+        public static AuthenticationBuilder AddOcelotPolicyJwtBearer(this IServiceCollection services, Func<HttpContext, JWTAuthorizationRequirement,bool> action)
         {
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
@@ -107,7 +107,9 @@ namespace Ocelot.JWTAuthorize
                 signingCredentials,
                 expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
                 );
-           
+
+
+            permissionRequirement.Func = action;
             //注入授权Handler
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
             services.AddSingleton(permissionRequirement);

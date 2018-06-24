@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace Ocelot.JWTAuthorize
 {
+
     /// <summary>
     /// 必要参数类
     /// </summary>
@@ -16,12 +17,22 @@ namespace Ocelot.JWTAuthorize
         {
             _permissions = permissions;
         }
+        public Func<HttpContext, JWTAuthorizationRequirement, bool> Func;
 
-        public bool Validate(HttpContext  httpContext)
+        public bool Validate(HttpContext httpContext, JWTAuthorizationRequirement jwtAuthorizationRequirement)
         {
 
-            return true;
+            if (Func != null)
+            {
+                return Func(httpContext, jwtAuthorizationRequirement);
+            }
+            else
+            {
+                return false;
+            }
         }
+
+
 
         /// <summary>
         /// 无权限action
@@ -31,7 +42,7 @@ namespace Ocelot.JWTAuthorize
         /// <summary>
         /// 认证授权类型
         /// </summary>
-        public string ClaimType { internal get; set; }
+        public string ClaimType { get; set; }
         /// <summary>
         /// 请求路径
         /// </summary>
@@ -65,7 +76,7 @@ namespace Ocelot.JWTAuthorize
         public JWTAuthorizationRequirement(string deniedAction, string claimType, string issuer, string audience, SigningCredentials signingCredentials, TimeSpan expiration)
         {
             ClaimType = claimType;
-            DeniedAction = deniedAction;    
+            DeniedAction = deniedAction;
             Issuer = issuer;
             Audience = audience;
             Expiration = expiration;
