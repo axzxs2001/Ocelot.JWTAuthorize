@@ -64,6 +64,8 @@ namespace Ocelot.JWTAuthorize
                 if (result?.Principal != null)
                 {
                     httpContext.User = result.Principal;
+
+                    //todo 这里调用验证方法
                     requirement.Validate(httpContext);
                     //权限中是否存在请求的url
                     if (_permissions != null && _permissions.Where(w => w.Url.Contains("}") ? questUrl.Contains(w.Url.Split('{')[0]) : w.Url.ToLower() == questUrl).Count() > 0)

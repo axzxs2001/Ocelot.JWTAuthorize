@@ -1,0 +1,12 @@
+﻿{
+  "JWTAuthorize": {
+    "Secret": "",
+    "Issuer": "",
+    "Audience": "",
+    "DeniedUrl": "",
+    "PolicyName": "",
+    "DefaultScheme": "",
+    "IsHttps": false
+
+  }
+}
