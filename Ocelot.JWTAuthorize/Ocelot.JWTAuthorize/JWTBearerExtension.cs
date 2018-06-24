@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -72,7 +73,7 @@ namespace Ocelot.JWTAuthorize
         /// <param name="deniedUrl">拒绝路由</param>
         /// <param name="isHttps">是否https</param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddOcelotPolicyJwtBearer(this IServiceCollection services, Action action)
+        public static AuthenticationBuilder AddOcelotPolicyJwtBearer(this IServiceCollection services, Action<HttpContext> action)
         {
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
@@ -104,8 +105,9 @@ namespace Ocelot.JWTAuthorize
                 config["Issuer"],
                 config["Audience"],
                 signingCredentials,
-                expiration: TimeSpan.FromHours(10)
+                expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
                 );
+           
             //注入授权Handler
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
             services.AddSingleton(permissionRequirement);
@@ -135,17 +137,23 @@ namespace Ocelot.JWTAuthorize
         /// <param name="secret">密钥</param>
         /// <param name="deniedUrl">拒绝路由</param>
         /// <returns></returns>
-        public static IServiceCollection AddJTokenBuild(this IServiceCollection services, string issuer, string audience, string secret, string deniedUrl)
+        public static IServiceCollection AddJTokenBuild(this IServiceCollection services)
         {
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)), SecurityAlgorithms.HmacSha256);
+            var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
+            if (configuration == null)
+            {
+                throw new OcelotJwtAuthoizeException("can't find JWTAuthorize section in appsetting.json");
+            }
+            var config = configuration.GetSection("JWTAuthorize");
+            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);
             //如果第三个参数，是ClaimTypes.Role，上面集合的每个元素的Name为角色名称，如果ClaimTypes.Name，即上面集合的每个元素的Name为用户名
             var permissionRequirement = new JWTAuthorizationRequirement(
-               deniedUrl,
-                ClaimTypes.Role,
-                issuer,
-                audience,
-                signingCredentials,
-                expiration: TimeSpan.FromHours(10)
+               config["DeniedUrl"],
+               ClaimTypes.Role,
+               config["Issuer"],
+               config["Audience"],
+               signingCredentials,
+               expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
                 );
             return services.AddSingleton(permissionRequirement);
 
