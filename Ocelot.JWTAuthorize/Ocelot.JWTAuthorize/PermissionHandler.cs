@@ -11,38 +11,36 @@ using System.Threading.Tasks;
 namespace Ocelot.JwtAuthorize
 {
     /// <summary>
-    /// 权限授权Handler
+    /// customer permission policy handler
     /// </summary>
     public class PermissionHandler : AuthorizationHandler<JwtAuthorizationRequirement>
     {
         /// <summary>
-        /// 验证方案提供对象
+        /// authentication scheme provider
         /// </summary>
-        public IAuthenticationSchemeProvider Schemes { get; set; }
+        readonly IAuthenticationSchemeProvider _schemes;
 
         /// <summary>
-        /// 构造
+        /// ctor
         /// </summary>
         /// <param name="schemes"></param>
         public PermissionHandler(IAuthenticationSchemeProvider schemes)
         {
-            Schemes = schemes;
+            _schemes = schemes;
         }
         /// <summary>
-        /// 自定义策略处理方法
+        /// handle requirement
         /// </summary>
-        /// <param name="context">上下文</param>
-        /// <param name="requirement">参数</param>
+        /// <param name="context">authorization handler context</param>
+        /// <param name="jwtAuthorizationRequirement">jwt authorization requirement</param>
         /// <returns></returns>
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, JwtAuthorizationRequirement jwtAuthorizationRequirement)
         {
-            //从AuthorizationHandlerContext转成HttpContext，以便取出表求信息
+            //convert AuthorizationHandlerContext to HttpContext
             var httpContext = (context.Resource as Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext).HttpContext;
-            //请求Url
-            var questUrl = httpContext.Request.Path.Value.ToLower();
-            //判断请求是否停止
+           
             var handlers = httpContext.RequestServices.GetRequiredService<IAuthenticationHandlerProvider>();
-            foreach (var scheme in await Schemes.GetRequestHandlerSchemesAsync())
+            foreach (var scheme in await _schemes.GetRequestHandlerSchemesAsync())
             {
                 var handler = await handlers.GetHandlerAsync(httpContext, scheme.Name) as IAuthenticationRequestHandler;
                 if (handler != null && await handler.HandleRequestAsync())
@@ -50,17 +48,15 @@ namespace Ocelot.JwtAuthorize
                     context.Fail();
                     return;
                 }
-            }
-            //判断请求是否拥有凭据，即有没有登录
-            var defaultAuthenticate = await Schemes.GetDefaultAuthenticateSchemeAsync();
+            }        
+            var defaultAuthenticate = await _schemes.GetDefaultAuthenticateSchemeAsync();
             if (defaultAuthenticate != null)
             {
-                var result = await httpContext.AuthenticateAsync(defaultAuthenticate.Name);
-                //result?.Principal不为空即登录成功
+                var result = await httpContext.AuthenticateAsync(defaultAuthenticate.Name);          
                 if (result?.Principal != null)
                 {
                     httpContext.User = result.Principal;
-                    var invockResult = jwtAuthorizationRequirement.ValidatePermission(httpContext, jwtAuthorizationRequirement);
+                    var invockResult = jwtAuthorizationRequirement.ValidatePermission(httpContext);
                     if (invockResult)
                     {
                         context.Succeed(jwtAuthorizationRequirement);

@@ -13,21 +13,16 @@ using System.Text;
 namespace Ocelot.JwtAuthorize
 {
     /// <summary>
-    /// Ocelot下JwtBearer扩展
+    /// Ocelot.JwtAuthorize extension
     /// </summary>
     public static class JwtBearerExtension
     {
         /// <summary>
-        /// 注入Ocelot下JwtBearer，在ocelot网关的Startup的ConfigureServices中调用
+        /// In the Ocelot Project, the Startup. Cs class ConfigureServices method is called
         /// </summary>
-        /// <param name="services">IServiceCollection</param>
-        /// <param name="issuer">发行人</param>
-        /// <param name="audience">订阅人</param>
-        /// <param name="secret">密钥</param>
-        /// <param name="defaultScheme">默认架构</param>
-        /// <param name="isHttps">是否https</param>
+        /// <param name="services">Service Collection</param>  
         /// <returns></returns>
-        public static AuthenticationBuilder AddOcelotJwtBearer(this IServiceCollection services)
+        public static AuthenticationBuilder AddOcelotJwtAuthorize(this IServiceCollection services)
         {
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
@@ -42,9 +37,9 @@ namespace Ocelot.JwtAuthorize
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = signingKey,
                 ValidateIssuer = true,
-                ValidIssuer = config["Issuer"],//发行人
+                ValidIssuer = config["Issuer"],
                 ValidateAudience = true,
-                ValidAudience = config["Audience"],//订阅人
+                ValidAudience = config["Audience"],
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
                 RequireExpirationTime = true,
@@ -54,26 +49,19 @@ namespace Ocelot.JwtAuthorize
                 options.DefaultScheme = config["DefaultScheme"];
             })
              .AddJwtBearer(config["DefaultScheme"], opt =>
-             {
-                 //不使用https
+             {               
                  opt.RequireHttpsMetadata = bool.Parse(config["IsHttps"]);
                  opt.TokenValidationParameters = tokenValidationParameters;
              });
         }
 
         /// <summary>
-        /// 注入Ocelot jwt策略，在业务API应用中的Startup的ConfigureServices调用
+        /// In the API Project, the Startup. Cs class ConfigureServices method is called
         /// </summary>
-        /// <param name="services">IServiceCollection</param>
-        /// <param name="issuer">发行人</param>
-        /// <param name="audience">订阅人</param>
-        /// <param name="secret">密钥</param>
-        /// <param name="defaultScheme">默认架构</param>
-        /// <param name="policyName">自定义策略名称</param>
-        /// <param name="deniedUrl">拒绝路由</param>
-        /// <param name="isHttps">是否https</param>
+        /// <param name="services">Service Collection</param>
+        /// <param name="validatePermission">validate permission action</param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddOcelotPolicyJwtBearer(this IServiceCollection services, Func<HttpContext, JwtAuthorizationRequirement, bool> validatePermission)
+        public static AuthenticationBuilder AddApiJwtAuthorize(this IServiceCollection services, Func<HttpContext,bool> validatePermission)
         {
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
@@ -89,27 +77,24 @@ namespace Ocelot.JwtAuthorize
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = signingKey,
                 ValidateIssuer = true,
-                ValidIssuer = config["Issuer"],//发行人
+                ValidIssuer = config["Issuer"],
                 ValidateAudience = true,
-                ValidAudience = config["Audience"],//订阅人
+                ValidAudience = config["Audience"],
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
-                RequireExpirationTime = true,
-
+                RequireExpirationTime = true
             };
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
-            //如果第三个参数，是ClaimTypes.Role，上面集合的每个元素的Name为角色名称，如果ClaimTypes.Name，即上面集合的每个元素的Name为用户名
-            var permissionRequirement = new JwtAuthorizationRequirement(
-                config["ClaimType"],
+         
+            var permissionRequirement = new JwtAuthorizationRequirement(             
                 config["Issuer"],
                 config["Audience"],
                 signingCredentials,
                 expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
                 );
 
-
             permissionRequirement.ValidatePermission = validatePermission;
-            //注入授权Handler
+            
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
             services.AddSingleton(permissionRequirement);
             return services.AddAuthorization(options =>
@@ -123,22 +108,17 @@ namespace Ocelot.JwtAuthorize
              options.DefaultScheme = config["DefaultScheme"];
          })
          .AddJwtBearer(config["DefaultScheme"], o =>
-         {
-             //不使用https
+         {             
              o.RequireHttpsMetadata = bool.Parse(config["IsHttps"]);
              o.TokenValidationParameters = tokenValidationParameters;
          });
         }
         /// <summary>
-        /// 注放Token生成器参数，在token生成项目的Startup的ConfigureServices中使用
+        /// In the Authorize Project, the Startup. Cs class ConfigureServices method is called
         /// </summary>
-        /// <param name="services">IServiceCollection</param>
-        /// <param name="issuer">发行人</param>
-        /// <param name="audience">订阅人</param>
-        /// <param name="secret">密钥</param>
-        /// <param name="deniedUrl">拒绝路由</param>
+        /// <param name="services">Service Collection</param>
         /// <returns></returns>
-        public static IServiceCollection AddJTokenBuild(this IServiceCollection services)
+        public static IServiceCollection AddTokenJwtAuthorize(this IServiceCollection services)
         {
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
@@ -146,18 +126,14 @@ namespace Ocelot.JwtAuthorize
                 throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
             }
             var config = configuration.GetSection("JwtAuthorize");
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);
-            //如果第三个参数，是ClaimTypes.Role，上面集合的每个元素的Name为角色名称，如果ClaimTypes.Name，即上面集合的每个元素的Name为用户名
-            var permissionRequirement = new JwtAuthorizationRequirement(
-               config["ClaimType"],
+            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);           
+            var permissionRequirement = new JwtAuthorizationRequirement(              
                config["Issuer"],
                config["Audience"],
                signingCredentials,
                expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
                 );
             return services.AddSingleton(permissionRequirement);
-
         }
-
     }
 }

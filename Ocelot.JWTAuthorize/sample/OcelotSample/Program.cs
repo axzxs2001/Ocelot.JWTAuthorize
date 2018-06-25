@@ -18,7 +18,12 @@ namespace OcelotSample
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+            WebHost.CreateDefaultBuilder(args)           
+             .ConfigureAppConfiguration(conbuilder =>
+                {
+                    conbuilder.AddJsonFile("appsettings.json");
+                    conbuilder.AddJsonFile("configuration.json");
+                })
             .UseUrls("http://*:5000")
             .UseStartup<Startup>();
     }

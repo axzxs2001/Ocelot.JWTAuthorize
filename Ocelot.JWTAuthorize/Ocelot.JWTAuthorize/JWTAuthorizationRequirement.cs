@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Ocelot.JwtAuthorize
 {
@@ -15,13 +16,13 @@ namespace Ocelot.JwtAuthorize
         /// <summary>
         /// validate permission Func
         /// </summary>
-        public Func<HttpContext, JwtAuthorizationRequirement, bool> ValidatePermission
+        public Func<HttpContext, bool> ValidatePermission
         { get; internal set; }
 
         /// <summary>
         /// claim type
         /// </summary>
-        public string ClaimType { get; set; }
+        public string ClaimType { get; set; } = ClaimTypes.Role;
 
         /// <summary>
         /// issuer
@@ -49,9 +50,8 @@ namespace Ocelot.JwtAuthorize
         /// <param name="audience">audience</param>
         /// <param name="signingCredentials">signing credentials</param>
         /// <param name="expiration">expiration</param>
-        public JwtAuthorizationRequirement(string claimType, string issuer, string audience, SigningCredentials signingCredentials, TimeSpan expiration)
-        {
-            ClaimType = claimType;
+        public JwtAuthorizationRequirement(string issuer, string audience, SigningCredentials signingCredentials, TimeSpan expiration)
+        {          
             Issuer = issuer;
             Audience = audience;
             Expiration = expiration;

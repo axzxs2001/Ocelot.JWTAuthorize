@@ -10,7 +10,7 @@ using Ocelot.JwtAuthorize;
 
 namespace AuthorizeSample.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("auth/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -25,23 +25,23 @@ namespace AuthorizeSample.Controllers
         [HttpPost]
         public IActionResult Login([FromBody]LoginModel loginModel)
         {
-            _logger.LogInformation($"{loginModel.UserName}登录！");
+            _logger.LogInformation($"{loginModel.UserName} login！");
             if (loginModel.UserName == "gsw" && loginModel.Password == "111111")
             {
                 var claims = new Claim[] {
-                    new Claim(ClaimTypes.Name, "桂素伟"),
+                    new Claim(ClaimTypes.Name, "gsw"),
                     new Claim(ClaimTypes.Role, "admin"),
                     new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_jwtAuthorizationRequirement.Expiration.TotalSeconds).ToString())
                 };
                 var identity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
                 identity.AddClaims(claims);
                 var token = TokenBuilder.BuildJwtToken(claims, _jwtAuthorizationRequirement);
-                _logger.LogInformation($"{loginModel.UserName}登录成功，并生成Token返回！");
+                _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
                 return new JsonResult(new { Result = true, Data = token });
             }
             else
             {
-                _logger.LogInformation($"{loginModel.UserName}登录失败！");
+                _logger.LogInformation($"{loginModel.UserName} login faile");
                 return new JsonResult(new
                 {
                     Result = false,

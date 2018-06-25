@@ -27,9 +27,9 @@ namespace APISample
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddOcelotPolicyJwtBearer((context, jwtAuthorizationRequirement) =>
+            services.AddApiJwtAuthorize((context) =>
             {
-                return ValidatePermission(context,jwtAuthorizationRequirement);
+                return ValidatePermission(context);
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -45,7 +45,7 @@ namespace APISample
             app.UseMvc();
         }
 
-        bool ValidatePermission(HttpContext httpContext, JwtAuthorizationRequirement jwtAuthorizationRequirement)
+        bool ValidatePermission(HttpContext httpContext)
         {
            
             var _permissions = new List<Permission>() {
@@ -53,24 +53,24 @@ namespace APISample
                 new Permission { Name="admin", Predicate="Post", Url="/api/values" }
             };
             var questUrl = httpContext.Request.Path.Value.ToLower();
-            //权限中是否存在请求的url
+  
             if (_permissions != null && _permissions.Where(w => w.Url.Contains("}") ? questUrl.Contains(w.Url.Split('{')[0]) : w.Url.ToLower() == questUrl).Count() > 0)
             {
-                var roles = httpContext.User.Claims.SingleOrDefault(s => s.Type == jwtAuthorizationRequirement.ClaimType).Value;
+                var roles = httpContext.User.Claims.SingleOrDefault(s => s.Type == ClaimTypes.Role).Value;
                 var roleArr = roles.Split(',');
-                //验证权限
+            
                 if (_permissions.Where(w => roleArr.Contains(w.Name) && w.Predicate.ToLower() == httpContext.Request.Method.ToLower()).Count() == 0)
                 {
-                    //无权限从header中返回错误   
+               
                     httpContext.Response.Headers.Add("error", "no permission");
                     return false;
                 }
             }
             else
             {
-                return true;
+                return false;
             }
-            //判断过期时间
+     
             if (DateTime.Parse(httpContext.User.Claims.SingleOrDefault(s => s.Type == ClaimTypes.Expiration).Value) >= DateTime.Now)
             {
                 return true;
