@@ -12,7 +12,7 @@ namespace AuthorizeSample.Controllers
 {
     [Route("auth/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController : Controller
     {
         readonly ILogger<LoginController> _logger;
         readonly JwtAuthorizationRequirement _jwtAuthorizationRequirement;
