@@ -8,12 +8,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Ocelot.JWTAuthorize
+namespace Ocelot.JwtAuthorize
 {
     /// <summary>
     /// 权限授权Handler
     /// </summary>
-    public class PermissionHandler : AuthorizationHandler<JWTAuthorizationRequirement>
+    public class PermissionHandler : AuthorizationHandler<JwtAuthorizationRequirement>
     {
         /// <summary>
         /// 验证方案提供对象
@@ -26,7 +26,7 @@ namespace Ocelot.JWTAuthorize
         /// <param name="schemes"></param>
         public PermissionHandler(IAuthenticationSchemeProvider schemes)
         {
-            Schemes = schemes;  
+            Schemes = schemes;
         }
         /// <summary>
         /// 自定义策略处理方法
@@ -34,7 +34,7 @@ namespace Ocelot.JWTAuthorize
         /// <param name="context">上下文</param>
         /// <param name="requirement">参数</param>
         /// <returns></returns>
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, JWTAuthorizationRequirement  jwtAuthorizationRequirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, JwtAuthorizationRequirement jwtAuthorizationRequirement)
         {
             //从AuthorizationHandlerContext转成HttpContext，以便取出表求信息
             var httpContext = (context.Resource as Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext).HttpContext;
@@ -60,9 +60,7 @@ namespace Ocelot.JWTAuthorize
                 if (result?.Principal != null)
                 {
                     httpContext.User = result.Principal;
-
-                    //todo 这里调用验证方法
-                    var invockResult = jwtAuthorizationRequirement.Func(httpContext, jwtAuthorizationRequirement);
+                    var invockResult = jwtAuthorizationRequirement.ValidatePermission(httpContext, jwtAuthorizationRequirement);
                     if (invockResult)
                     {
                         context.Succeed(jwtAuthorizationRequirement);
@@ -71,47 +69,16 @@ namespace Ocelot.JWTAuthorize
                     {
                         context.Fail();
                     }
-                    return;
-                  
-                    ////权限中是否存在请求的url
-                    //if (_permissions != null && _permissions.Where(w => w.Url.Contains("}") ? questUrl.Contains(w.Url.Split('{')[0]) : w.Url.ToLower() == questUrl).Count() > 0)
-                    //{
-                    //    var roles = httpContext.User.Claims.SingleOrDefault(s => s.Type == requirement.ClaimType).Value;
-                    //    var roleArr = roles.Split(',');
-                    //    //验证权限
-                    //    if (_permissions.Where(w => roleArr.Contains(w.Name) && w.Predicate.ToUpper() == httpContext.Request.Method).Count() == 0)
-                    //    {
-                    //        //无权限跳转到拒绝页面   
-                    //        httpContext.Response.Headers.Add("error", "no permission");
-                    //        context.Fail();
-                    //        return;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    context.Fail();
-                    //    return;
-                    //}
-                    ////判断过期时间
-                    //if (DateTime.Parse(httpContext.User.Claims.SingleOrDefault(s => s.Type == ClaimTypes.Expiration).Value) >= DateTime.Now)
-                    //{
-                    //    context.Succeed(requirement);
-                    //}
-                    //else
-                    //{
-                    //    context.Fail();
-                    //}
-                    //return;
+                }
+                else
+                {
+                    context.Fail();
                 }
             }
-            //判断没有登录时，是否访问登录的url,并且是Post请求，并且是form表单提交类型，否则为失败
-            if (!questUrl.Equals(jwtAuthorizationRequirement.LoginPath.ToLower(), StringComparison.Ordinal) && (!httpContext.Request.Method.Equals("POST")
-               || !httpContext.Request.HasFormContentType))
+            else
             {
                 context.Fail();
-                return;
-            }
-            context.Succeed(jwtAuthorizationRequirement);
+            }         
         }
     }
 }

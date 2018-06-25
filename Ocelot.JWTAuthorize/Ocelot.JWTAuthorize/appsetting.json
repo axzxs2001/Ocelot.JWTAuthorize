@@ -1,11 +1,11 @@
 ﻿{
-  "JWTAuthorize": {
+  "JwtAuthorize": {
     "Secret": "",
     "Issuer": "",
     "Audience": "",
-    "DeniedUrl": "",
     "PolicyName": "",
     "DefaultScheme": "",
+    "ClaimType": "",
     "IsHttps": false,
     "Expiration": 500
   }

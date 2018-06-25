@@ -5,35 +5,36 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Ocelot.JWTAuthorize
+namespace Ocelot.JwtAuthorize
 {
     /// <summary>
-    /// JWTToken生成类
+    /// TokenBuilder
     /// </summary>
     public class TokenBuilder
     {
         /// <summary>
-        /// 获取基于JWT的Token
+        /// get the token of jwt
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="claims">claim array</param>
+        /// <param name="jwtAuthorizationRequirement">JwtAuthorizationRequirement</param>
         /// <returns></returns>
-        public static dynamic BuildJWTToken(Claim[] claims, JWTAuthorizationRequirement permissionRequirement)
+        public static dynamic BuildJwtToken(Claim[] claims, JwtAuthorizationRequirement  jwtAuthorizationRequirement)
         {
             var now = DateTime.UtcNow;
             var jwt = new JwtSecurityToken(
-                issuer: permissionRequirement.Issuer,
-                audience: permissionRequirement.Audience,
+                issuer: jwtAuthorizationRequirement.Issuer,
+                audience: jwtAuthorizationRequirement.Audience,
                 claims: claims,
                 notBefore: now,
-                expires: now.Add(permissionRequirement.Expiration),
-                signingCredentials: permissionRequirement.SigningCredentials
+                expires: now.Add(jwtAuthorizationRequirement.Expiration),
+                signingCredentials: jwtAuthorizationRequirement.SigningCredentials
             );
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             var responseJson = new 
             {
                 Status = true,
                 access_token = encodedJwt,
-                expires_in = permissionRequirement.Expiration.TotalMilliseconds,
+                expires_in = jwtAuthorizationRequirement.Expiration.TotalSeconds,
                 token_type = "Bearer"
             };
             return responseJson;

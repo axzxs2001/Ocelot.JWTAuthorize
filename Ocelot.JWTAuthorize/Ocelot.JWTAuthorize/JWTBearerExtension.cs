@@ -10,12 +10,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace Ocelot.JWTAuthorize
+namespace Ocelot.JwtAuthorize
 {
     /// <summary>
     /// Ocelot下JwtBearer扩展
     /// </summary>
-    public static class JWTBearerExtension
+    public static class JwtBearerExtension
     {
         /// <summary>
         /// 注入Ocelot下JwtBearer，在ocelot网关的Startup的ConfigureServices中调用
@@ -32,9 +32,9 @@ namespace Ocelot.JWTAuthorize
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
             {
-                throw new OcelotJwtAuthoizeException("can't find JWTAuthorize section in appsetting.json");
+                throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
             }
-            var config = configuration.GetSection("JWTAuthorize");
+            var config = configuration.GetSection("JwtAuthorize");
             var keyByteArray = Encoding.ASCII.GetBytes(config["Secret"]);
             var signingKey = new SymmetricSecurityKey(keyByteArray);
             var tokenValidationParameters = new TokenValidationParameters
@@ -73,14 +73,14 @@ namespace Ocelot.JWTAuthorize
         /// <param name="deniedUrl">拒绝路由</param>
         /// <param name="isHttps">是否https</param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddOcelotPolicyJwtBearer(this IServiceCollection services, Func<HttpContext, JWTAuthorizationRequirement,bool> action)
+        public static AuthenticationBuilder AddOcelotPolicyJwtBearer(this IServiceCollection services, Func<HttpContext, JwtAuthorizationRequirement, bool> validatePermission)
         {
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
             {
-                throw new OcelotJwtAuthoizeException("can't find JWTAuthorize section in appsetting.json");
+                throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
             }
-            var config = configuration.GetSection("JWTAuthorize");
+            var config = configuration.GetSection("JwtAuthorize");
 
             var keyByteArray = Encoding.ASCII.GetBytes(config["Secret"]);
             var signingKey = new SymmetricSecurityKey(keyByteArray);
@@ -99,9 +99,8 @@ namespace Ocelot.JWTAuthorize
             };
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
             //如果第三个参数，是ClaimTypes.Role，上面集合的每个元素的Name为角色名称，如果ClaimTypes.Name，即上面集合的每个元素的Name为用户名
-            var permissionRequirement = new JWTAuthorizationRequirement(
-               config["DeniedUrl"],
-                ClaimTypes.Role,
+            var permissionRequirement = new JwtAuthorizationRequirement(
+                config["ClaimType"],
                 config["Issuer"],
                 config["Audience"],
                 signingCredentials,
@@ -109,7 +108,7 @@ namespace Ocelot.JWTAuthorize
                 );
 
 
-            permissionRequirement.Func = action;
+            permissionRequirement.ValidatePermission = validatePermission;
             //注入授权Handler
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
             services.AddSingleton(permissionRequirement);
@@ -144,14 +143,13 @@ namespace Ocelot.JWTAuthorize
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
             {
-                throw new OcelotJwtAuthoizeException("can't find JWTAuthorize section in appsetting.json");
+                throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
             }
-            var config = configuration.GetSection("JWTAuthorize");
+            var config = configuration.GetSection("JwtAuthorize");
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);
             //如果第三个参数，是ClaimTypes.Role，上面集合的每个元素的Name为角色名称，如果ClaimTypes.Name，即上面集合的每个元素的Name为用户名
-            var permissionRequirement = new JWTAuthorizationRequirement(
-               config["DeniedUrl"],
-               ClaimTypes.Role,
+            var permissionRequirement = new JwtAuthorizationRequirement(
+               config["ClaimType"],
                config["Issuer"],
                config["Audience"],
                signingCredentials,

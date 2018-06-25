@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Ocelot.JWTAuthorize;
+using Ocelot.JwtAuthorize;
 
 namespace AuthorizeSample.Controllers
 {
@@ -15,8 +15,8 @@ namespace AuthorizeSample.Controllers
     public class LoginController : ControllerBase
     {
         readonly ILogger<LoginController> _logger;
-        readonly JWTAuthorizationRequirement _jwtAuthorizationRequirement;
-        public LoginController(JWTAuthorizationRequirement jwtAuthorizationRequirement, ILogger<LoginController> logger)
+        readonly JwtAuthorizationRequirement _jwtAuthorizationRequirement;
+        public LoginController(JwtAuthorizationRequirement jwtAuthorizationRequirement, ILogger<LoginController> logger)
         {
             _logger = logger;
             _jwtAuthorizationRequirement = jwtAuthorizationRequirement;
@@ -35,7 +35,7 @@ namespace AuthorizeSample.Controllers
                 };
                 var identity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
                 identity.AddClaims(claims);
-                var token = TokenBuilder.BuildJWTToken(claims, _jwtAuthorizationRequirement);
+                var token = TokenBuilder.BuildJwtToken(claims, _jwtAuthorizationRequirement);
                 _logger.LogInformation($"{loginModel.UserName}登录成功，并生成Token返回！");
                 return new JsonResult(new { Result = true, Data = token });
             }

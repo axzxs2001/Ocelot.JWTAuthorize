@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ocelot.JWTAuthorize
+namespace Ocelot.JwtAuthorize
 {
+    /// <summary>
+    /// Ocelot.JwtAuthorize customer exception
+    /// </summary>
     public class OcelotJwtAuthoizeException : ApplicationException
     {
         public OcelotJwtAuthoizeException(string message) :

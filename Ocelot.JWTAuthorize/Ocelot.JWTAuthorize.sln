@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ocelot.JWTAuthorize", "Ocelot.JWTAuthorize\Ocelot.JWTAuthorize.csproj", "{E7856AA0-A765-486A-B763-63539E91458D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ocelot.JwtAuthorize", "Ocelot.JWTAuthorize\Ocelot.JwtAuthorize.csproj", "{E7856AA0-A765-486A-B763-63539E91458D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{BAF09B8D-0B9D-4448-A454-499143A6659C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotSample", "sample\OcelotSample\OcelotSample.csproj", "{5040389F-6EC0-4A4B-9026-E362F1C568E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OcelotSample", "sample\OcelotSample\OcelotSample.csproj", "{5040389F-6EC0-4A4B-9026-E362F1C568E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APISample", "sample\APISample\APISample.csproj", "{9289BA80-14BD-41FE-928F-0B3A598B0D61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APISample", "sample\APISample\APISample.csproj", "{9289BA80-14BD-41FE-928F-0B3A598B0D61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorizeSample", "sample\AuthorizeSample\AuthorizeSample.csproj", "{56C9C9DA-4597-4D29-85A3-B289790C68BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorizeSample", "sample\AuthorizeSample\AuthorizeSample.csproj", "{56C9C9DA-4597-4D29-85A3-B289790C68BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
