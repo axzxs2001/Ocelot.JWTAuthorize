@@ -1,5 +1,8 @@
 # Ocelot.JWTAuthorize
+<img src="https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/Ocelot.JWTAuthorize/Ocelot.JWTAuthorize/githublogo.png" alt="GitHub" title="Ocelot.JwtAuthorize" width="360" height="200" />
+
 This library is used in the verification project when Ocelot is used as an API gateway. In the Ocelot project, the API project, the verification project, and the injection function can be used.
+
 
 ### 1. add the following sections to the appsetting. Json file for each project
 ```json
@@ -18,7 +21,7 @@ This library is used in the verification project when Ocelot is used as an API g
 
 ### 2. API Project 
 
-> PM> Install-Package Ocelot.JWTAuthorize
+>#### PM>Install-Package Ocelot.JWTAuthorize
 Startup.cs
 ```c#
 using System;
@@ -112,8 +115,7 @@ API Controller
 ```
 ### 3. Authorize Project
 
-> PM> Install-Package Ocelot.JWTAuthorize
-
+>#### PM>Install-Package Ocelot.JWTAuthorize
 startup.cs
 ```C#
 using Microsoft.AspNetCore.Builder;
@@ -198,8 +200,7 @@ LoginController.cs
 
 ### 4. Ocelot Project
 
-> PM> Install-Package Ocelot.JWTAuthorize
-
+>#### PM>Install-Package Ocelot.JWTAuthorize
 Startup.cs
 ```C#
 using Microsoft.AspNetCore.Builder;
