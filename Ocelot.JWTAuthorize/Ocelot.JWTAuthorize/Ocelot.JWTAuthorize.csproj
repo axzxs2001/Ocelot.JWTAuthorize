@@ -13,7 +13,7 @@
     <Authors>Gui Suwei</Authors>
     <Company>Gui Suwei</Company>
     <Description>This library is used in the verification project when Ocelot is used as an API gateway. In the Ocelot project, the API project, the verification project, and the injection function can be used.</Description>
-    <PackageIconUrl>https://en.gravatar.com/userimage/127492023/df724e8c3fd9e368516db08e174ef09f.png</PackageIconUrl>
+    <PackageIconUrl>https://en.gravatar.com/userimage/127492023/4c91bdd5f8e3c7e7c810cb440ca56a70.png</PackageIconUrl>
     <FileVersion>0.0.102.0</FileVersion>
   </PropertyGroup>
 
