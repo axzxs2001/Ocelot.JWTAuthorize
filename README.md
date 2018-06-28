@@ -1,4 +1,6 @@
 # Ocelot.JWTAuthorize
+<img src="https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/Ocelot.JWTAuthorize/Ocelot.JWTAuthorize/githublogo.png" alt="GitHub" title="Ocelot.JwtAuthorize" width="180" height="100" />
+
 This library is used in the verification project when Ocelot is used as an API gateway. In the Ocelot project, the API project, the verification project, and the injection function can be used.
 
 ### 1. add the following sections to the appsetting. Json file for each project
