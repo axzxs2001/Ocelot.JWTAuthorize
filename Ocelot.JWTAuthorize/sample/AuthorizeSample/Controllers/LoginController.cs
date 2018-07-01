@@ -15,11 +15,11 @@ namespace AuthorizeSample.Controllers
     public class LoginController : Controller
     {
         readonly ILogger<LoginController> _logger;
-        readonly JwtAuthorizationRequirement _jwtAuthorizationRequirement;
-        public LoginController(JwtAuthorizationRequirement jwtAuthorizationRequirement, ILogger<LoginController> logger)
+        readonly ITokenBuilder _tokenBuilder;
+        public LoginController(ITokenBuilder tokenBuilder, ILogger<LoginController> logger)
         {
             _logger = logger;
-            _jwtAuthorizationRequirement = jwtAuthorizationRequirement;
+            _tokenBuilder = tokenBuilder;
 
         }
         [HttpPost]
@@ -31,11 +31,9 @@ namespace AuthorizeSample.Controllers
                 var claims = new Claim[] {
                     new Claim(ClaimTypes.Name, "gsw"),
                     new Claim(ClaimTypes.Role, "admin"),
-                    new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_jwtAuthorizationRequirement.Expiration.TotalSeconds).ToString())
-                };
-                var identity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
-                identity.AddClaims(claims);
-                var token = TokenBuilder.BuildJwtToken(claims, _jwtAuthorizationRequirement);
+                  
+                };               
+                var token = _tokenBuilder.BuildJwtToken(claims);
                 _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
                 return new JsonResult(new { Result = true, Data = token });
             }

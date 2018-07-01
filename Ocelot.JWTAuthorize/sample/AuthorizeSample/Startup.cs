@@ -18,6 +18,7 @@ namespace AuthorizeSample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ITokenBuilder, TokenBuilder>();
             services.AddTokenJwtAuthorize();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
