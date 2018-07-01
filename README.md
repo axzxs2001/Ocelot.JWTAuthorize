@@ -138,6 +138,7 @@ namespace AuthorizeSample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ITokenBuilder, TokenBuilder>();
             services.AddTokenJwtAuthorize();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -156,16 +157,18 @@ namespace AuthorizeSample
 ```
 LoginController.cs
 ```C#
+namespace AuthorizeSample.Controllers
+{
     [Route("auth/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController : Controller
     {
         readonly ILogger<LoginController> _logger;
-        readonly JwtAuthorizationRequirement _jwtAuthorizationRequirement;
-        public LoginController(JwtAuthorizationRequirement jwtAuthorizationRequirement, ILogger<LoginController> logger)
+        readonly ITokenBuilder _tokenBuilder;
+        public LoginController(ITokenBuilder tokenBuilder, ILogger<LoginController> logger)
         {
             _logger = logger;
-            _jwtAuthorizationRequirement = jwtAuthorizationRequirement;
+            _tokenBuilder = tokenBuilder;
 
         }
         [HttpPost]
@@ -176,12 +179,9 @@ LoginController.cs
             {
                 var claims = new Claim[] {
                     new Claim(ClaimTypes.Name, "gsw"),
-                    new Claim(ClaimTypes.Role, "admin"),
-                    new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_jwtAuthorizationRequirement.Expiration.TotalSeconds).ToString())
-                };
-                var identity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
-                identity.AddClaims(claims);
-                var token = TokenBuilder.BuildJwtToken(claims, _jwtAuthorizationRequirement);
+                    new Claim(ClaimTypes.Role, "admin")                  
+                };               
+                var token = _tokenBuilder.BuildJwtToken(claims);
                 _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
                 return new JsonResult(new { Result = true, Data = token });
             }
@@ -196,6 +196,8 @@ LoginController.cs
             }
         }
     }
+}
+
 ```
 
 ### 4. Ocelot Project
