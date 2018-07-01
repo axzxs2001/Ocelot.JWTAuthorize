@@ -133,6 +133,7 @@ namespace Ocelot.JwtAuthorize
                signingCredentials,
                expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
                 );
+            services.AddSingleton<ITokenBuilder, TokenBuilder>();
             return services.AddSingleton(permissionRequirement);
         }
     }

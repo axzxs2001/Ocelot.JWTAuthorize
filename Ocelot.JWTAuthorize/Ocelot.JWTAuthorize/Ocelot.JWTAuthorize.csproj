@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.0.200</Version>
+    <Version>0.0.201</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/axzxs2001/Ocelot.JWTAuthorize</PackageProjectUrl>
@@ -15,7 +15,7 @@
     <Description>This library is used in the verification project when Ocelot is used as an API gateway. In the Ocelot project, the API project, the verification project, and the injection function can be used.</Description>
     <PackageIconUrl>https://en.gravatar.com/userimage/127492023/4c91bdd5f8e3c7e7c810cb440ca56a70.png</PackageIconUrl>
     <FileVersion>0.0.103.0</FileVersion>
-    <AssemblyVersion>0.0.200.0</AssemblyVersion>
+    <AssemblyVersion>0.0.201.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
