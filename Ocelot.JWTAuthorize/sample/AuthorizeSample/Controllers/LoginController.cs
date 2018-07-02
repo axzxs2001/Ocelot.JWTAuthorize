@@ -26,16 +26,25 @@ namespace AuthorizeSample.Controllers
         public IActionResult Login([FromBody]LoginModel loginModel)
         {
             _logger.LogInformation($"{loginModel.UserName} login！");
-            if (loginModel.UserName == "gsw" && loginModel.Password == "111111")
+            if (loginModel.Password == "111111")
             {
                 var claims = new Claim[] {
-                    new Claim(ClaimTypes.Name, "gsw"),
-                    new Claim(ClaimTypes.Role, "admin"),
-                  
-                };               
-                var token = _tokenBuilder.BuildJwtToken(claims);
-                _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
-                return new JsonResult(new { Result = true, Data = token });
+                        new Claim(ClaimTypes.Name, "gsw"),
+                        new Claim(ClaimTypes.Role, "admin")
+                    };
+                switch (loginModel.UserName)
+                {
+                    case "gsw"://过期时间为500000
+                        var token1 = _tokenBuilder.BuildJwtToken(claims, DateTime.Now.AddSeconds(500000));
+                        _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
+                        return new JsonResult(new { Result = true, Data = token1 });
+                    case "ggg"://过期时间为30
+                        var token2 = _tokenBuilder.BuildJwtToken(claims, DateTime.Now.AddSeconds(30));
+                        _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
+                        return new JsonResult(new { Result = true, Data = token2 });
+                    default:
+                        return null;
+                }
             }
             else
             {

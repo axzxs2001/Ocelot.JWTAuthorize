@@ -18,6 +18,6 @@ namespace Ocelot.JwtAuthorize
         /// </summary>
         /// <param name="claims">claim array</param>
         /// <returns></returns>
-        Token BuildJwtToken(Claim[] claims);
+        Token BuildJwtToken(Claim[] claims, DateTime? expires = null);
     }
 }

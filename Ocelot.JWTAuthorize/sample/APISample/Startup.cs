@@ -22,7 +22,6 @@ namespace APISample
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddApiJwtAuthorize((context) =>
             {
                 return ValidatePermission(context);
@@ -39,10 +38,13 @@ namespace APISample
 
             app.UseMvc();
         }
-
+        /// <summary>
+        /// Cusomer Validate Method
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <returns></returns>
         bool ValidatePermission(HttpContext httpContext)
         {
-           
             var permissions = new List<Permission>() {
                 new Permission { Name="admin", Predicate="Get", Url="/api/values" },
                 new Permission { Name="admin,system", Predicate="Post", Url="/api/values" }
@@ -59,15 +61,10 @@ namespace APISample
                     httpContext.Response.Headers.Add("error", "no permission");
                     return false;
                 }
-            }
-            else
-            {
-                return false;
-            }
-
-            if (DateTime.Parse(httpContext.User.Claims.SingleOrDefault(s => s.Type == ClaimTypes.Expiration).Value) >= DateTime.Now)
-            {
-                return true;
+                else
+                {
+                    return true;
+                }
             }
             else
             {

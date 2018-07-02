@@ -28,25 +28,25 @@ namespace Ocelot.JwtAuthorize
         /// get the token of jwt
         /// </summary>
         /// <param name="claims">claim array</param>
+        /// <param name="expires">expires</param>
         /// <returns></returns>
-        public Token BuildJwtToken(Claim[] claims)
+        public Token BuildJwtToken(Claim[] claims, DateTime? expires = null)
         {
-            var claimList = new List<Claim>(claims);
-            claimList.Add(new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_jwtAuthorizationRequirement.Expiration.TotalSeconds).ToString()));
+            var claimList = new List<Claim>(claims);          
             var now = DateTime.UtcNow;
             var jwt = new JwtSecurityToken(
                 issuer: _jwtAuthorizationRequirement.Issuer,
                 audience: _jwtAuthorizationRequirement.Audience,
                 claims: claimList.ToArray(),
                 notBefore: now,
-                expires: now.Add(_jwtAuthorizationRequirement.Expiration),
+                expires: expires,
                 signingCredentials: _jwtAuthorizationRequirement.SigningCredentials
             );
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             var responseJson = new Token
             {
                 TokenValue = encodedJwt,
-                Expires = _jwtAuthorizationRequirement.Expiration.TotalSeconds,
+                Expires = expires,
                 TokenType = "Bearer"
             };
             return responseJson;
@@ -64,7 +64,7 @@ namespace Ocelot.JwtAuthorize
             /// <summary>
             /// Expires (unit second)
             /// </summary>
-            public double Expires
+            public DateTime? Expires
             { get; set; }
             /// <summary>
             /// token type

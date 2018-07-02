@@ -35,7 +35,7 @@ namespace Ocelot.JwtAuthorize
         /// <summary>
         /// expiration
         /// </summary>
-        public TimeSpan Expiration { get; set; }
+        //public TimeSpan Expiration { get; set; }
         /// <summary>
         /// signing credentials
         /// </summary>
@@ -50,11 +50,11 @@ namespace Ocelot.JwtAuthorize
         /// <param name="audience">audience</param>
         /// <param name="signingCredentials">signing credentials</param>
         /// <param name="expiration">expiration</param>
-        public JwtAuthorizationRequirement(string issuer, string audience, SigningCredentials signingCredentials, TimeSpan expiration)
+        public JwtAuthorizationRequirement(string issuer, string audience, SigningCredentials signingCredentials)
         {          
             Issuer = issuer;
             Audience = audience;
-            Expiration = expiration;
+            //Expiration = expiration;
             SigningCredentials = signingCredentials;
         }
     }

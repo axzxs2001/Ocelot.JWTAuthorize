@@ -42,14 +42,14 @@ namespace Ocelot.JwtAuthorize
                 ValidAudience = config["Audience"],
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
-                RequireExpirationTime = true,
+                RequireExpirationTime = bool.Parse(config["RequireExpirationTime"])
             };
             return services.AddAuthentication(options =>
             {
                 options.DefaultScheme = config["DefaultScheme"];
             })
              .AddJwtBearer(config["DefaultScheme"], opt =>
-             {               
+             {
                  opt.RequireHttpsMetadata = bool.Parse(config["IsHttps"]);
                  opt.TokenValidationParameters = tokenValidationParameters;
              });
@@ -61,7 +61,7 @@ namespace Ocelot.JwtAuthorize
         /// <param name="services">Service Collection</param>
         /// <param name="validatePermission">validate permission action</param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddApiJwtAuthorize(this IServiceCollection services, Func<HttpContext,bool> validatePermission)
+        public static AuthenticationBuilder AddApiJwtAuthorize(this IServiceCollection services, Func<HttpContext, bool> validatePermission)
         {
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
@@ -82,19 +82,18 @@ namespace Ocelot.JwtAuthorize
                 ValidAudience = config["Audience"],
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
-                RequireExpirationTime = true
+                RequireExpirationTime = bool.Parse(config["RequireExpirationTime"])
             };
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
-         
-            var permissionRequirement = new JwtAuthorizationRequirement(             
+
+            var permissionRequirement = new JwtAuthorizationRequirement(
                 config["Issuer"],
                 config["Audience"],
-                signingCredentials,
-                expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
+                signingCredentials
                 );
 
             permissionRequirement.ValidatePermission = validatePermission;
-            
+
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
             services.AddSingleton(permissionRequirement);
             return services.AddAuthorization(options =>
@@ -108,7 +107,7 @@ namespace Ocelot.JwtAuthorize
              options.DefaultScheme = config["DefaultScheme"];
          })
          .AddJwtBearer(config["DefaultScheme"], o =>
-         {             
+         {
              o.RequireHttpsMetadata = bool.Parse(config["IsHttps"]);
              o.TokenValidationParameters = tokenValidationParameters;
          });
@@ -126,12 +125,11 @@ namespace Ocelot.JwtAuthorize
                 throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
             }
             var config = configuration.GetSection("JwtAuthorize");
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);           
-            var permissionRequirement = new JwtAuthorizationRequirement(              
+            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);
+            var permissionRequirement = new JwtAuthorizationRequirement(
                config["Issuer"],
                config["Audience"],
-               signingCredentials,
-               expiration: TimeSpan.FromMinutes(double.Parse(config["Expiration"]))
+               signingCredentials
                 );
             services.AddSingleton<ITokenBuilder, TokenBuilder>();
             return services.AddSingleton(permissionRequirement);
