@@ -10,7 +10,7 @@ namespace Ocelot.JwtAuthorize
     /// <summary>
     /// TokenBuilder
     /// </summary>
-    public class TokenBuilder:ITokenBuilder
+    public class TokenBuilder : ITokenBuilder
     {
         /// <summary>
         /// JwtAuthorizationRequirement
@@ -43,14 +43,34 @@ namespace Ocelot.JwtAuthorize
                 signingCredentials: _jwtAuthorizationRequirement.SigningCredentials
             );
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-            var responseJson = new
+            var responseJson = new Token
             {
-                Status = true,
-                access_token = encodedJwt,
-                expires_in = _jwtAuthorizationRequirement.Expiration.TotalSeconds,
-                token_type = "Bearer"
+                TokenValue = encodedJwt,
+                Expires = _jwtAuthorizationRequirement.Expiration.TotalSeconds,
+                TokenType = "Bearer"
             };
             return responseJson;
+        }
+        /// <summary>
+        /// back token
+        /// </summary>
+        public class Token
+        {
+            /// <summary>
+            /// Token Value
+            /// </summary>
+            public string TokenValue
+            { get; set; }
+            /// <summary>
+            /// Expires (unit second)
+            /// </summary>
+            public double Expires
+            { get; set; }
+            /// <summary>
+            /// token type
+            /// </summary>
+            public string TokenType
+            { get; set; }
         }
     }
 }
