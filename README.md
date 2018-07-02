@@ -14,7 +14,7 @@ This library is used in the verification project when Ocelot is used as an API g
     "PolicyName": "permission",
     "DefaultScheme": "Bearer",
     "IsHttps": false,
-    "Expiration": 500
+    "RequireExpirationTime": true
   }
 }
 ```
@@ -144,8 +144,9 @@ namespace AuthorizeSample.Controllers
                 var claims = new Claim[] {
                     new Claim(ClaimTypes.Name, "gsw"),
                     new Claim(ClaimTypes.Role, "admin")                  
-                };               
-                var token = _tokenBuilder.BuildJwtToken(claims);
+                };     
+                //DateTime.Now.AddSeconds(1200) is expiration time
+                var token = _tokenBuilder.BuildJwtToken(claims, DateTime.Now.AddSeconds(1200));
                 _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
                 return new JsonResult(new { Result = true, Data = token });
             }
