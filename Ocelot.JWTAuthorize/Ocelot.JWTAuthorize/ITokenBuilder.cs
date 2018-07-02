@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static Ocelot.JwtAuthorize.TokenBuilder;
 
 namespace Ocelot.JwtAuthorize
 {
@@ -17,6 +18,6 @@ namespace Ocelot.JwtAuthorize
         /// </summary>
         /// <param name="claims">claim array</param>
         /// <returns></returns>
-        dynamic BuildJwtToken(Claim[] claims);
+        Token BuildJwtToken(Claim[] claims);
     }
 }

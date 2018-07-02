@@ -29,7 +29,7 @@ namespace Ocelot.JwtAuthorize
         /// </summary>
         /// <param name="claims">claim array</param>
         /// <returns></returns>
-        public dynamic BuildJwtToken(Claim[] claims)
+        public Token BuildJwtToken(Claim[] claims)
         {
             var claimList = new List<Claim>(claims);
             claimList.Add(new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_jwtAuthorizationRequirement.Expiration.TotalSeconds).ToString()));
