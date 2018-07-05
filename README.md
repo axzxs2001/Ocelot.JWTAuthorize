@@ -2,6 +2,7 @@
 <img src="https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/Ocelot.JWTAuthorize/Ocelot.JWTAuthorize/githublogo.png" alt="GitHub" title="Ocelot.JwtAuthorize" width="360" height="200" />
 
 [![NuGet Badge](https://buildstats.info/nuget/Ocelot.JwtAuthorize)](https://www.nuget.org/packages/Ocelot.JwtAuthorize/)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/LICENSE)
 
 
 This library is used in the verification project when Ocelot is used as an API gateway. In the Ocelot project, the API project, the verification project, and the injection function can be used.
