@@ -28,50 +28,15 @@ This library is used in the verification project when Ocelot is used as an API g
 >#### PM>Install-Package Ocelot.JWTAuthorize
 Startup.cs
 ```c#
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Ocelot.JwtAuthorize;
-namespace APISample
+public void ConfigureServices(IServiceCollection services)
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-
-            services.AddApiJwtAuthorize((context) =>
-            {
-               //validate permissions return(permit) true or false(denied)
-                return true;
-            });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }
-
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            app.UseMvc();
-        }
-    }
+     services.AddApiJwtAuthorize((context) =>
+     {
+          //validate permissions return(permit) true or false(denied)
+          return true;
+     });
+     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 }
-
 ```
 API Controller
 ```C#
@@ -79,94 +44,42 @@ API Controller
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : Controller
-    {
-    }
 ```
 ### 3. Authorize Project
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
 startup.cs
 ```C#
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Ocelot.JwtAuthorize;
-
-namespace AuthorizeSample
+ public void ConfigureServices(IServiceCollection services)
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddTokenJwtAuthorize();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }
- 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            app.UseMvc();
-        }
-    }
+      services.AddTokenJwtAuthorize();
+      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 }
-
 ```
 LoginController.cs
 ```C#
-namespace AuthorizeSample.Controllers
-{
-    [Route("auth/[controller]")]
-    [ApiController]
-    public class LoginController : Controller
-    {
-        readonly ILogger<LoginController> _logger;
-        readonly ITokenBuilder _tokenBuilder;
-        public LoginController(ITokenBuilder tokenBuilder, ILogger<LoginController> logger)
+[HttpPost]
+public IActionResult Login([FromBody]LoginModel loginModel)
+{        
+        if (loginModel.UserName == "gsw" && loginModel.Password == "111111")
         {
-            _logger = logger;
-            _tokenBuilder = tokenBuilder;
-
-        }
-        [HttpPost]
-        public IActionResult Login([FromBody]LoginModel loginModel)
-        {
-            _logger.LogInformation($"{loginModel.UserName} login！");
-            if (loginModel.UserName == "gsw" && loginModel.Password == "111111")
-            {
-                var claims = new Claim[] {
-                    new Claim(ClaimTypes.Name, "gsw"),
-                    new Claim(ClaimTypes.Role, "admin")                  
-                };     
-                //DateTime.Now.AddSeconds(1200) is expiration time
-                var token = _tokenBuilder.BuildJwtToken(claims, DateTime.Now.AddSeconds(1200));
-                _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
-                return new JsonResult(new { Result = true, Data = token });
-            }
-            else
-            {
-                _logger.LogInformation($"{loginModel.UserName} login faile");
-                return new JsonResult(new
-                {
-                    Result = false,
-                    Message = "Authentication Failure"
-                });
-            }
-        }
-    }
-}
-
+             var claims = new Claim[] {
+                 new Claim(ClaimTypes.Name, "gsw"),
+                 new Claim(ClaimTypes.Role, "admin")                  
+             };     
+             //DateTime.Now.AddSeconds(1200) is expiration time
+             var token = _tokenBuilder.BuildJwtToken(claims, DateTime.Now.AddSeconds(1200));      
+             return new JsonResult(new { Result = true, Data = token });
+         }
+         else
+         {
+             return new JsonResult(new
+             {
+                 Result = false,
+                 Message = "Authentication Failure"
+             });
+         }
+ }
 ```
 
 ### 4. Ocelot Project
@@ -174,44 +87,10 @@ namespace AuthorizeSample.Controllers
 >#### PM>Install-Package Ocelot.JWTAuthorize
 Startup.cs
 ```C#
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Ocelot.DependencyInjection;
-using Ocelot.JwtAuthorize;
-using Ocelot.Middleware;
-
-namespace OcelotSample
+public void ConfigureServices(IServiceCollection services)
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-     
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddOcelotJwtAuthorize();
-            services.AddOcelot(Configuration);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-        }
-     
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            app.UseMvc();
-            await app.UseOcelot();
-        }
-    }
+       services.AddOcelotJwtAuthorize();
+       services.AddOcelot(Configuration);
+       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 }
-
 ```
