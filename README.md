@@ -3,7 +3,7 @@
 
 [![Image of Build](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/LICENSE)
 [![NuGet Badge](https://buildstats.info/nuget/Ocelot.JwtAuthorize)](https://www.nuget.org/packages/Ocelot.JwtAuthorize/)
-[![GitHub closed issues](https://img.shields.io/github/issues-closed/badges/shields.svg)](https://github.com/axzxs2001/Ocelot.JWTAuthorize/issues?q=is%3Aissue+is%3Aclosed)
+
 
 This library is used in the verification project when Ocelot is used as an API gateway. In the Ocelot project, the API project, the verification project, and the injection function can be used.
 
