@@ -1,7 +1,7 @@
 # Ocelot.JWTAuthorize
 <img src="https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/Ocelot.JWTAuthorize/Ocelot.JWTAuthorize/githublogo.png" alt="GitHub" title="Ocelot.JwtAuthorize" width="360" height="200" />
 
-[![Image of Build](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/LICENSE)
+[![Image of Build](https://img.shields.io/npm/l/express.svg)](https://github.com/axzxs2001/Ocelot.JWTAuthorize/blob/master/LICENSE)
 [![NuGet Badge](https://buildstats.info/nuget/Ocelot.JwtAuthorize)](https://www.nuget.org/packages/Ocelot.JwtAuthorize/)
 
 
