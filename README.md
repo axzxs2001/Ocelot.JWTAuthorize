@@ -24,7 +24,7 @@ This library is used in the verification project when Ocelot is used as an API g
 ### 2. API Project 
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-Startup.cs in ConfigureServices method
+Startup.cs,In ConfigureServices method
 ```c#
 services.AddApiJwtAuthorize((context) =>
 {    
@@ -32,7 +32,7 @@ services.AddApiJwtAuthorize((context) =>
 });
  
 ```
-API Controller
+API Controller,  "permission" is PolicyName of appsettion.json
 ```C#
 [Authorize("permission")]
 public class ValuesController : Controller
@@ -40,7 +40,7 @@ public class ValuesController : Controller
 ### 3. Authorize Project
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-startup.cs in ConfigureServices method
+startup.cs,In ConfigureServices method
 ```C#
 services.AddTokenJwtAuthorize();
 ```
@@ -72,7 +72,7 @@ public IActionResult Login([FromBody]LoginModel loginModel)
 ### 4. Ocelot Project
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-Startup.cs ConfigureServices method
+Startup.cs,In ConfigureServices method
 ```C#
 services.AddOcelotJwtAuthorize();
 ```
