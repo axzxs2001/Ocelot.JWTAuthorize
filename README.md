@@ -24,7 +24,7 @@ This library is used in the verification project when Ocelot is used as an API g
 ### 2. API Project 
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-Startup.cs  ConfigureServices method
+Startup.cs in ConfigureServices method
 ```c#
 services.AddApiJwtAuthorize((context) =>
 {    
@@ -34,17 +34,17 @@ services.AddApiJwtAuthorize((context) =>
 ```
 API Controller
 ```C#
-    [Authorize("permission")]
-    public class ValuesController : Controller
+[Authorize("permission")]
+public class ValuesController : Controller
 ```
 ### 3. Authorize Project
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-startup.cs ConfigureServices method
+startup.cs in ConfigureServices method
 ```C#
 services.AddTokenJwtAuthorize();
 ```
-LoginController.cs
+LoginController.cs  _tokenBuilder is dependency injection in AddTokenJwtAuthorize,so it's ITokenBuilder
 ```C#
 [HttpPost]
 public IActionResult Login([FromBody]LoginModel loginModel)
