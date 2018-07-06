@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Ocelot.JwtAuthorize
@@ -37,8 +33,8 @@ namespace Ocelot.JwtAuthorize
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, JwtAuthorizationRequirement jwtAuthorizationRequirement)
         {
             //convert AuthorizationHandlerContext to HttpContext
-            var httpContext = (context.Resource as Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext).HttpContext;
-           
+            var httpContext = context.Resource.GetType().GetProperty("HttpContext").GetValue(context.Resource) as HttpContext; 
+        
             var handlers = httpContext.RequestServices.GetRequiredService<IAuthenticationHandlerProvider>();
             foreach (var scheme in await _schemes.GetRequestHandlerSchemesAsync())
             {

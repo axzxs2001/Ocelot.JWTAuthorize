@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace Ocelot.JwtAuthorize
@@ -32,10 +31,7 @@ namespace Ocelot.JwtAuthorize
         /// audience
         /// </summary>
         public string Audience { get; set; }
-        /// <summary>
-        /// expiration
-        /// </summary>
-        //public TimeSpan Expiration { get; set; }
+
         /// <summary>
         /// signing credentials
         /// </summary>
@@ -53,8 +49,7 @@ namespace Ocelot.JwtAuthorize
         public JwtAuthorizationRequirement(string issuer, string audience, SigningCredentials signingCredentials)
         {          
             Issuer = issuer;
-            Audience = audience;
-            //Expiration = expiration;
+            Audience = audience;            
             SigningCredentials = signingCredentials;
         }
     }
