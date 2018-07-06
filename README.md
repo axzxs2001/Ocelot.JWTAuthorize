@@ -7,7 +7,6 @@
 
 This library is used in the verification project when Ocelot is used as an API gateway. In the Ocelot project, the API project, the verification project, and the injection function can be used.
 
-
 ### 1. add the following sections to the appsetting. Json file for each project
 ```json
 {
@@ -22,39 +21,28 @@ This library is used in the verification project when Ocelot is used as an API g
   }
 }
 ```
-
 ### 2. API Project 
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-Startup.cs
+Startup.cs  ConfigureServices method
 ```c#
-public void ConfigureServices(IServiceCollection services)
-{
-     services.AddApiJwtAuthorize((context) =>
-     {
-          //validate permissions return(permit) true or false(denied)
-          return true;
-     });
-     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-}
+services.AddApiJwtAuthorize((context) =>
+{    
+    return true;//validate permissions return(permit) true or false(denied)
+});
+ 
 ```
 API Controller
 ```C#
     [Authorize("permission")]
-    [Route("api/[controller]")]
-    [ApiController]
     public class ValuesController : Controller
 ```
 ### 3. Authorize Project
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-startup.cs
+startup.cs ConfigureServices method
 ```C#
- public void ConfigureServices(IServiceCollection services)
-{
-      services.AddTokenJwtAuthorize();
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-}
+services.AddTokenJwtAuthorize();
 ```
 LoginController.cs
 ```C#
@@ -81,16 +69,10 @@ public IActionResult Login([FromBody]LoginModel loginModel)
          }
  }
 ```
-
 ### 4. Ocelot Project
 
 >#### PM>Install-Package Ocelot.JWTAuthorize
-Startup.cs
+Startup.cs ConfigureServices method
 ```C#
-public void ConfigureServices(IServiceCollection services)
-{
-       services.AddOcelotJwtAuthorize();
-       services.AddOcelot(Configuration);
-       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-}
+services.AddOcelotJwtAuthorize();
 ```
