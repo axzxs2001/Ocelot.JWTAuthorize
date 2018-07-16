@@ -76,3 +76,8 @@ Startup.cs,In ConfigureServices method
 ```C#
 services.AddOcelotJwtAuthorize();
 ```
+
+
+## Planned functions
+1. single sign on
+2. hot update permission
