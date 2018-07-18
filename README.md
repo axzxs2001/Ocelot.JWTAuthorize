@@ -79,5 +79,5 @@ services.AddOcelotJwtAuthorize();
 
 
 ## Planned functions
-1. single sign on
+1. single user sign on
 2. hot update permission
