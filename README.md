@@ -56,7 +56,8 @@ public IActionResult Login([FromBody]LoginModel loginModel)
                  new Claim(ClaimTypes.Role, "admin")                  
              };     
              //DateTime.Now.AddSeconds(1200) is expiration time
-             var token = _tokenBuilder.BuildJwtToken(claims, DateTime.Now.AddSeconds(1200));      
+             var ip =HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
+             var token = _tokenBuilder.BuildJwtToken(claims,ip, DateTime.UtcNow, DateTime.Now.AddSeconds(1200));      
              return new JsonResult(new { Result = true, Data = token });
          }
          else
