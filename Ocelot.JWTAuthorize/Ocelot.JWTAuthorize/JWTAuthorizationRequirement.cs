@@ -16,12 +16,7 @@ namespace Ocelot.JwtAuthorize
         /// validate permission Func
         /// </summary>
         public Func<HttpContext, bool> ValidatePermission
-        { get; internal set; }
-
-        /// <summary>
-        /// claim type
-        /// </summary>
-        public string ClaimType { get; set; } = ClaimTypes.Role;
+        { get; internal set; }       
 
         /// <summary>
         /// issuer

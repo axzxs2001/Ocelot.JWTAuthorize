@@ -25,9 +25,12 @@ namespace AuthorizeSample.Controllers
         [HttpPost]
         public IActionResult Login([FromBody]LoginModel loginModel)
         {
+
+
             _logger.LogInformation($"{loginModel.UserName} login！");
             if (loginModel.Password == "111111")
             {
+                var ip =HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
                 var claims = new Claim[] {
                         new Claim(ClaimTypes.Name, "gsw"),
                         new Claim(ClaimTypes.Role, "admin")
@@ -35,7 +38,7 @@ namespace AuthorizeSample.Controllers
                 switch (loginModel.UserName)
                 {
                     case "gsw"://过期时间为500000
-                        var token1 = _tokenBuilder.BuildJwtToken(claims, DateTime.Now.AddSeconds(500000));
+                        var token1 = _tokenBuilder.BuildJwtToken(claims, ip, DateTime.UtcNow, DateTime.Now.AddSeconds(500000));
                         _logger.LogInformation($"{loginModel.UserName} login success，and generate token return");
                         return new JsonResult(new { Result = true, Data = token1 });
                     case "ggg"://过期时间为30
