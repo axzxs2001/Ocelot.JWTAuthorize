@@ -76,3 +76,8 @@ Startup.cs,In ConfigureServices method
 ```C#
 services.AddOcelotJwtAuthorize();
 ```
+
+
+## Planned functions
+1. single ip sign on with same token
+2. hot update permission
