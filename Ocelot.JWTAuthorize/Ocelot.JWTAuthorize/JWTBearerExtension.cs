@@ -110,7 +110,7 @@ namespace Ocelot.JwtAuthorize
              o.TokenValidationParameters = tokenValidationParameters;
          });
         }
-        /// <summary>
+         /// <summary>
         /// In the Authorize Project, the Startup. Cs class ConfigureServices method is called
         /// </summary>
         /// <param name="services">Service Collection</param>
@@ -123,10 +123,21 @@ namespace Ocelot.JwtAuthorize
                 throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
             }
             var config = configuration.GetSection("JwtAuthorize");
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);
+            return services.AddTokenJwtAuthorize(config);
+        }
+
+        /// <summary>
+        /// In the Authorize Project, the Startup. Cs class ConfigureServices method is called
+        /// </summary>
+        /// <param name="services">Service Collection</param>
+        /// <returns></returns>
+        public static IServiceCollection AddTokenJwtAuthorize(this IServiceCollection services, IConfiguration configuration)
+        {
+
+            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Secret"])), SecurityAlgorithms.HmacSha256);
             var permissionRequirement = new JwtAuthorizationRequirement(
-               config["Issuer"],
-               config["Audience"],
+               configuration["Issuer"],
+               configuration["Audience"],
                signingCredentials
                 );
             services.AddSingleton<ITokenBuilder, TokenBuilder>();
