@@ -77,3 +77,6 @@ Startup.cs,In ConfigureServices method
 ```C#
 services.AddOcelotJwtAuthorize();
 ```
+
+## TODO
+Token Invalid
