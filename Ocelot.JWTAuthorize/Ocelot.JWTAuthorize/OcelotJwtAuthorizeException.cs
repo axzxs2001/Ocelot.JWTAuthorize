@@ -5,12 +5,12 @@ namespace Ocelot.JwtAuthorize
     /// <summary>
     /// Ocelot.JwtAuthorize customer exception
     /// </summary>
-    public class OcelotJwtAuthoizeException : ApplicationException
+    public class OcelotJwtAuthorizeException : ApplicationException
     {
-        public OcelotJwtAuthoizeException(string message) :
+        public OcelotJwtAuthorizeException(string message) :
             base(message)
         { }
 
-        public OcelotJwtAuthoizeException() : base() { }
+        public OcelotJwtAuthorizeException() : base() { }
     }
 }
