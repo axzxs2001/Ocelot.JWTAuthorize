@@ -25,7 +25,7 @@ namespace Ocelot.JwtAuthorize
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
             {
-                throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
+                throw new OcelotJwtAuthorizeException("can't find JwtAuthorize section in appsetting.json");
             }
             var config = configuration.GetSection("JwtAuthorize");
             var keyByteArray = Encoding.ASCII.GetBytes(config["Secret"]);
@@ -64,7 +64,7 @@ namespace Ocelot.JwtAuthorize
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
             {
-                throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
+                throw new OcelotJwtAuthorizeException("can't find JwtAuthorize section in appsetting.json");
             }
             var config = configuration.GetSection("JwtAuthorize");
 
@@ -120,7 +120,7 @@ namespace Ocelot.JwtAuthorize
             var configuration = services.SingleOrDefault(s => s.ServiceType.Name == typeof(IConfiguration).Name)?.ImplementationInstance as IConfiguration;
             if (configuration == null)
             {
-                throw new OcelotJwtAuthoizeException("can't find JwtAuthorize section in appsetting.json");
+                throw new OcelotJwtAuthorizeException("can't find JwtAuthorize section in appsetting.json");
             }
             var config = configuration.GetSection("JwtAuthorize");
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Secret"])), SecurityAlgorithms.HmacSha256);
